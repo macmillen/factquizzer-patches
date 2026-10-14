@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FactQuizzer AI – Einstellungen</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="options-container">
+    <header class="options-header">
+      <div class="brand">
+        <span class="logo">🧠</span>
+        <div>
+          <h1>FactQuizzer AI</h1>
+          <p>YouTube Geopolitik & Wirtschaft Wissens-Coach</p>
+        </div>
+      </div>
+      <div class="version-tag">v1.0.0 (Manifest V3)</div>
+    </header>
+
+    <main class="options-content">
+      <!-- Gemini API Settings -->
+      <section class="card">
+        <div class="card-title">
+          <span class="icon">🔑</span>
+          <h3>Gemini AI Konfiguration</h3>
+        </div>
+        <p class="card-desc">FactQuizzer nutzt Google Gemini, um aus dem Video Kernfakten zu extrahieren und anspruchsvolle Quizzes zu generieren.</p>
+        
+        <div class="form-group">
+          <label for="api-key">Gemini API Key:</label>
+          <div class="input-with-button">
+            <input type="password" id="api-key" placeholder="AIzaSy... oder AQ..." spellcheck="false">
+            <button id="toggle-key-visibility" class="btn btn-secondary" type="button">Anzeigen</button>
+          </div>
+          <small class="helper-text">Dein Schlüssel wird sicher und ausschließlich lokal in deinem Browser (Chrome Storage) gespeichert.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="model-select">Gemini Modell:</label>
+          <select id="model-select">
+            <option value="gemini-3-flash-preview" selected>Gemini 3 Flash Preview (Empfohlen – Schnell & Präzise)</option>
+            <option value="gemini-3.8-flash">Gemini 3.8 Flash</option>
+            <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
+          </select>
+        </div>
+
+        <div class="test-row">
+          <button id="test-connection-btn" class="btn btn-secondary">
+            ⚡ API-Verbindung testen
+          </button>
+          <span id="test-result" class="test-result-box"></span>
+        </div>
+      </section>
+
+      <!-- Automation & Quiz Preferences -->
+      <section class="card">
+        <div class="card-title">
+          <span class="icon">⚙️</span>
+          <h3>Quiz- & Automations-Verhalten</h3>
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <strong>Automatisches Quiz nach Videoende</strong>
+            <p class="toggle-desc">Öffnet automatisch das Quiz-Fenster, sobald das YouTube-Video zu Ende geschaut wurde.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="auto-open-toggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="form-group mt-16">
+          <label for="default-mode-select">Bevorzugter Quiz-Modus beim Öffnen:</label>
+          <select id="default-mode-select">
+            <option value="multiple_choice" selected>Multiple Choice (Schnelltest & Kernfakten)</option>
+            <option value="open_ended">Stichwörter & Freitext (Schwieriger & Genauere Antworten)</option>
+            <option value="facts">Fakten-Dossier (Alle Fakten auf einen Blick)</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Data Management -->
+      <section class="card">
+        <div class="card-title">
+          <span class="icon">💾</span>
+          <h3>Speicher & Cache</h3>
+        </div>
+        <p class="card-desc">Bereits generierte Video-Quizzes werden zwischengespeichert, um API-Aufrufe zu sparen.</p>
+
+        <div class="button-row">
+          <button id="clear-cache-btn" class="btn btn-outline">
+            🗑️ Quiz-Cache leeren
+          </button>
+          <button id="clear-history-btn" class="btn btn-outline">
+            📜 Lernverlauf leeren
+          </button>
+        </div>
+      </section>
+
+      <!-- Save Bar -->
+      <div class="save-bar">
+        <button id="save-settings-btn" class="btn btn-primary btn-large">
+          💾 Einstellungen speichern
+        </button>
+        <span id="save-status" class="save-status"></span>
+      </div>
+    </main>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

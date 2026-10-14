@@ -1,0 +1,253 @@
+/* popup.css */
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: rgba(255, 255, 255, 0.04);
+  --border: rgba(255, 255, 255, 0.1);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 360px;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-sizing: border-box;
+}
+
+.popup-container {
+  padding: 16px;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  font-size: 26px;
+}
+
+.logo-group h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.tagline {
+  font-size: 11px;
+  color: var(--accent-blue);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.icon-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.icon-btn:hover {
+  background: var(--border);
+}
+
+.status-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.dot-active {
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+.dot-inactive {
+  background: #64748b;
+}
+
+.status-card h4 {
+  margin: 0 0 12px 0;
+  font-size: 13.5px;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.95;
+}
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.stat-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+
+.stat-num {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.stat-lbl {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.history-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.text-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+}
+.text-link:hover {
+  color: #ef4444;
+}
+
+.history-list {
+  max-height: 120px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.empty-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 10px 0;
+  line-height: 1.4;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+}
+
+.h-title {
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #cbd5e1;
+}
+
+.h-score {
+  font-weight: 700;
+  color: #10b981;
+}
+
+.popup-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.popup-footer a {
+  color: var(--accent-blue);
+  text-decoration: none;
+}
+.popup-footer a:hover {
+  text-decoration: underline;
+}

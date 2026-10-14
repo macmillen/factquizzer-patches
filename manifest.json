@@ -1,0 +1,62 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube FactQuizzer AI – Geopolitik & Wirtschaft",
+  "short_name": "FactQuizzer",
+  "version": "1.0.0",
+  "description": "Erstellt automatische KI-Quizzes nach YouTube-Videos mit Kernfakten, Multiple Choice und Stichwort-Modus.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.youtube.com/*"
+      ],
+      "js": [
+        "page-bridge.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://*.youtube.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "YouTube FactQuizzer",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  }
+}

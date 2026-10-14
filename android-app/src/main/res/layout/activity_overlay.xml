@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/overlay_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:padding="8dp">
+
+    <!-- Floating Dialog Container -->
+    <LinearLayout
+        android:id="@+id/overlay_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:background="#0F172A"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- Top Drag Bar / Header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="#151C2C"
+            android:paddingHorizontal="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="🧠 FactQuizzer In-Player Quiz"
+                android:textColor="#F8FAFC"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btn_close"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:tint="#CBD5E1"
+                android:contentDescription="Schließen" />
+        </RelativeLayout>
+
+        <!-- WebView hosting local FactQuizzer app -->
+        <WebView
+            android:id="@+id/quiz_webview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</RelativeLayout>

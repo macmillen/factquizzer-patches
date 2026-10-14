@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0f19">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FactQuizzer">
+  
+  <title>YouTube FactQuizzer AI – Geopolitik & Wirtschaft (Android)</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon192.png">
+  <link rel="apple-touch-icon" href="icons/icon192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="logo-emoji">🧠</span>
+        <div>
+          <h1>FactQuizzer AI</h1>
+          <span class="tagline">Geopolitik & Wirtschaft</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="pwa-install-btn" class="icon-btn install-btn" style="display: none;" title="Auf Startbildschirm installieren">
+          📲 Installieren
+        </button>
+        <button id="open-settings-btn" class="icon-btn" title="Einstellungen">
+          ⚙️
+        </button>
+      </div>
+    </header>
+
+      <!-- HTTPS / Insecure Context Warning for Android PWA Install -->
+      <div id="insecure-context-banner" class="share-hint" style="display: none; background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; margin-bottom: 12px;">
+        <span class="hint-icon">⚠️</span>
+        <div style="font-size: 12px; line-height: 1.4;">
+          <strong>PWA-Installation auf Android:</strong> Chrome verlangt HTTPS. Trage in <code>chrome://flags</code> unter <em>"Insecure origins treated as secure"</em> die IP <code id="current-host-ip">...</code> ein oder nutze einen HTTPS-Tunnel.
+        </div>
+      </div>
+
+      <!-- Input bar / Share Handler -->
+      <section class="url-input-card">
+        <div class="input-row">
+          <input type="text" id="video-url-input" placeholder="YouTube Link einfügen..." autocomplete="off" spellcheck="false">
+          <div style="display: flex; gap: 8px;">
+            <button id="paste-btn" class="btn btn-secondary" type="button" title="Aus Zwischenablage einfügen">
+              📋 Einfügen
+            </button>
+            <button id="start-btn" class="btn btn-primary" type="button">
+              🚀 Quiz starten
+            </button>
+          </div>
+        </div>
+        <div id="clipboard-hint" class="share-hint" style="display: none; background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.4); color: #93c5fd; cursor: pointer;">
+          <span class="hint-icon">📋</span>
+          <span>Link in Zwischenablage gefunden! <strong>Tippe hier zum Starten</strong></span>
+        </div>
+        <div id="share-info-hint" class="share-hint" style="display: none;">
+          <span class="hint-icon">📲</span>
+          <span>Aus YouTube / ReVanced geteilt!</span>
+        </div>
+      </section>
+
+      <!-- Video Overview Card -->
+      <section id="video-card" class="video-card" style="display: none;">
+        <div class="video-thumb-wrap">
+          <img id="video-thumb" src="" alt="Thumbnail">
+        </div>
+        <div class="video-details">
+          <h3 id="video-title">Video-Titel</h3>
+          <p id="video-channel" class="channel-name">Kanal</p>
+        </div>
+      </section>
+
+      <!-- Loading State -->
+      <section id="loading-card" class="card loading-card" style="display: none;">
+        <div class="spinner"></div>
+        <h3 id="loading-title">Fakten werden extrahiert...</h3>
+        <p id="loading-sub" class="loading-sub">Gemini 3 Flash analysiert die geopolitischen und wirtschaftlichen Kerninhalte des Videos.</p>
+      </section>
+
+      <!-- Error State -->
+      <section id="error-card" class="card error-card" style="display: none;">
+        <div class="error-icon">⚠️</div>
+        <h3 id="error-title">Fehler beim Erstellen</h3>
+        <p id="error-message">Details zum Fehler...</p>
+        <button id="retry-btn" class="btn btn-secondary">Erneut versuchen</button>
+      </section>
+
+      <!-- Quiz Interactive Container -->
+      <section id="quiz-container" class="quiz-container" style="display: none;">
+        <!-- Mode Tabs -->
+        <div class="mode-tabs">
+          <button class="tab-btn active" data-mode="multiple_choice">
+            ⚡ Multiple Choice
+          </button>
+          <button class="tab-btn" data-mode="open_ended">
+            ✍️ Stichwörter & Detail
+          </button>
+          <button class="tab-btn" data-mode="facts">
+            📋 Fakten-Dossier
+          </button>
+        </div>
+
+        <!-- Detail Filter Pills -->
+        <div id="filter-bar" class="filter-bar">
+          <span class="filter-lbl">Detailgrad:</span>
+          <button class="pill active" data-filter="core">🔥 Kernfakten (Zuerst)</button>
+          <button class="pill" data-filter="advanced">📈 Vertiefung</button>
+          <button class="pill" data-filter="expert">🔍 Experten-Details</button>
+          <button class="pill" data-filter="all">Alle</button>
+        </div>
+
+        <!-- Dynamic Question Content -->
+        <div id="quiz-body" class="quiz-body">
+          <!-- Injected via JavaScript -->
+        </div>
+
+        <!-- Quiz Navigation / Score footer -->
+        <div id="quiz-footer" class="quiz-footer">
+          <div id="score-counter" class="score-counter">Punkte: 0 / 0</div>
+          <button id="refresh-quiz-btn" class="btn btn-ghost">🔄 Neu generieren</button>
+        </div>
+      </section>
+
+      <!-- Recent Quizzes / History -->
+      <section id="history-section" class="card history-card">
+        <div class="section-title-row">
+          <h3>📜 Zuletzt gelernt</h3>
+          <button id="clear-history-btn" class="text-link">Leeren</button>
+        </div>
+        <div id="history-list" class="history-list">
+          <div class="empty-state">Noch keine Quizzes absolviert. Teile ein Video aus YouTube ReVanced, um dein erstes Fakten-Quiz zu starten!</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-backdrop" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>⚙️ Einstellungen</h3>
+          <button id="close-settings-btn" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="setting-api-key">Gemini API Key:</label>
+            <input type="password" id="setting-api-key" placeholder="AIzaSy... oder AQ..." spellcheck="false">
+            <button id="toggle-key-btn" class="btn btn-sm btn-ghost" type="button">Anzeigen</button>
+          </div>
+
+          <div class="form-group">
+            <label for="setting-model">Gemini Modell:</label>
+            <select id="setting-model">
+              <option value="gemini-3-flash-preview" selected>Gemini 3 Flash Preview (Empfohlen)</option>
+              <option value="gemini-3.8-flash">Gemini 3.8 Flash</option>
+              <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <button id="test-key-btn" class="btn btn-secondary btn-block">⚡ Verbindung testen</button>
+            <span id="test-key-status" class="test-status"></span>
+          </div>
+
+          <hr class="divider">
+
+          <div class="form-group">
+            <button id="save-settings-btn" class="btn btn-primary btn-block">💾 Speichern</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

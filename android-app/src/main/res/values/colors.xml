@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_translucent">#99000000</color>
+    <color name="bg_card">#0F172A</color>
+    <color name="primary">#3B82F6</color>
+    <color name="text_white">#F8FAFC</color>
+</resources>

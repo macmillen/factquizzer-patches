@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube FactQuizzer AI</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <div class="logo-group">
+        <span class="logo-icon">🧠</span>
+        <div>
+          <h2>FactQuizzer AI</h2>
+          <span class="tagline">Geopolitik & Wirtschaft</span>
+        </div>
+      </div>
+      <button id="open-settings-btn" class="icon-btn" title="Einstellungen">⚙️</button>
+    </header>
+
+    <main class="popup-main">
+      <!-- Active Video Status -->
+      <div id="video-status-card" class="status-card">
+        <div class="status-indicator">
+          <span id="status-dot" class="dot dot-active"></span>
+          <span id="status-text">YouTube-Video erkannt</span>
+        </div>
+        <h4 id="video-title">Titel wird geladen...</h4>
+        <button id="start-quiz-btn" class="btn btn-primary btn-block">
+          🧠 Quiz jetzt öffnen
+        </button>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-num" id="total-quizzes">0</span>
+          <span class="stat-lbl">Quizzes gelöst</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="avg-score">-%</span>
+          <span class="stat-lbl">Erfolgsquote</span>
+        </div>
+      </div>
+
+      <!-- Recent Topics / History Preview -->
+      <div class="history-section">
+        <div class="section-header">
+          <span>Zuletzt gelernt:</span>
+          <button id="clear-history-btn" class="text-link">Leeren</button>
+        </div>
+        <div id="history-list" class="history-list">
+          <div class="empty-hint">Noch keine Quizzes absolviert. Schaue ein Video zu Ende, um dein erstes Quiz zu starten!</div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="popup-footer">
+      <span>Powered by Gemini 3 Flash</span>
+      <a href="#" id="options-link">Einstellungen & Key</a>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

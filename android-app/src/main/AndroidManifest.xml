@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.factquizzer.overlay">
+
+    <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="34" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher"
+        android:roundIcon="@drawable/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.FactQuizzer.Overlay"
+        android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".OverlayActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|keyboardHidden">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- YouTube Video URLs (from ReVanced Player Button / External Downloader) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="youtu.be" />
+                <data android:host="youtube.com" />
+                <data android:host="www.youtube.com" />
+                <data android:host="m.youtube.com" />
+            </intent-filter>
+
+            <!-- Text / Share Intent -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+            <!-- Custom Direct Intent from ReVanced -->
+            <intent-filter>
+                <action android:name="com.factquizzer.OPEN_OVERLAY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
