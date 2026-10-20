@@ -123,6 +123,9 @@ public class OverlayActivity extends Activity {
         }
 
         String videoId = extractVideoId(rawUrl);
+        if (videoId == null && intent.hasExtra("video_id")) {
+            videoId = intent.getStringExtra("video_id");
+        }
         loadDefaultUrl(videoId);
     }
 

@@ -445,30 +445,57 @@ ANTWORTE AUSSCHLIESSLICH ALS VALIDES JSON:
   ]
 }`;
 
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-    const resp = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          responseMimeType: "application/json",
-          temperature: 0.2
-        }
-      })
-    });
+    const candidateModels = Array.from(new Set([
+      model,
+      'gemini-2.5-flash',
+      'gemini-2.5-flash-lite',
+      'gemini-2.0-flash'
+    ]));
 
-    if (!resp.ok) {
-      const errText = await resp.text();
-      let msg = `Gemini API Fehler (${resp.status})`;
+    let data = null;
+    let lastError = null;
+
+    for (const candidateModel of candidateModels) {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${candidateModel}:generateContent?key=${apiKey}`;
       try {
-        const j = JSON.parse(errText);
-        if (j.error?.message) msg = j.error.message;
-      } catch (e) {}
-      throw new Error(msg);
+        const resp = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.2
+            }
+          })
+        });
+
+        if (!resp.ok) {
+          const errText = await resp.text();
+          let msg = `Gemini API Fehler (${resp.status})`;
+          try {
+            const j = JSON.parse(errText);
+            if (j.error?.message) msg = j.error.message;
+          } catch (e) {}
+          lastError = new Error(msg);
+          if (resp.status === 503 || resp.status === 429 || resp.status === 404) {
+            continue;
+          }
+          throw lastError;
+        }
+
+        data = await resp.json();
+        if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+          break;
+        }
+      } catch (err) {
+        lastError = err;
+      }
     }
 
-    const data = await resp.json();
+    if (!data) {
+      throw lastError || new Error("Gemini API nicht erreichbar.");
+    }
     const textOutput = data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!textOutput) throw new Error("Leere Antwort von Gemini.");
 

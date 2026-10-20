@@ -214,37 +214,64 @@ GIB DEINE ANTWORT AUSSCHLIESSLICH ALS VALIDES JSON IM FOLGENDEN SCHEMA ZURÜCK:
 }
 Antworte vollständig auf Deutsch und halte dich strikt an das JSON-Format ohne Markdown-Ticks außerhalb des JSON.`;
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  const candidateModels = Array.from(new Set([
+    model,
+    'gemini-2.5-flash',
+    'gemini-2.5-flash-lite',
+    'gemini-2.0-flash'
+  ]));
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      contents: [{
-        parts: [{ text: prompt }]
-      }],
-      generationConfig: {
-        responseMimeType: "application/json",
-        temperature: 0.2
-      }
-    })
-  });
+  let result = null;
+  let lastError = null;
 
-  if (!response.ok) {
-    const errBody = await response.text();
-    let message = `Gemini API Fehler (${response.status})`;
+  for (const candidateModel of candidateModels) {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${candidateModel}:generateContent?key=${apiKey}`;
     try {
-      const parsedErr = JSON.parse(errBody);
-      if (parsedErr.error && parsedErr.error.message) {
-        message = parsedErr.error.message;
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{ text: prompt }]
+          }],
+          generationConfig: {
+            responseMimeType: "application/json",
+            temperature: 0.2
+          }
+        })
+      });
+
+      if (!response.ok) {
+        const errBody = await response.text();
+        let message = `Gemini API Fehler (${response.status})`;
+        try {
+          const parsedErr = JSON.parse(errBody);
+          if (parsedErr.error && parsedErr.error.message) {
+            message = parsedErr.error.message;
+          }
+        } catch (e) {}
+        lastError = new Error(message);
+        if (response.status === 503 || response.status === 429 || response.status === 404) {
+          continue;
+        }
+        throw lastError;
       }
-    } catch (e) {}
-    throw new Error(message);
+
+      result = await response.json();
+      if (result?.candidates?.[0]?.content?.parts?.[0]?.text) {
+        break;
+      }
+    } catch (err) {
+      lastError = err;
+    }
   }
 
-  const result = await response.json();
+  if (!result) {
+    throw lastError || new Error("Gemini API nicht erreichbar.");
+  }
+
   const textOutput = result.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!textOutput) {
     throw new Error("Leere Antwort von der Gemini API erhalten.");
