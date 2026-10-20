@@ -4,11 +4,19 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="/tmp/factquizzer_rvp_build"
-JAVA_BIN="${JAVA_HOME:-$HOME/.local/share/jdk}/bin/java"
-SMALI_JAR="$HOME/.local/share/smali.jar"
-BAKSMALI_JAR="$HOME/.local/share/baksmali.jar"
+if [ "${IN_BUILDER_CONTAINER:-0}" = "1" ] && ! python3 -c "import PIL" >/dev/null 2>&1; then
+  apt-get update -qq && apt-get install -y -qq python3 python3-pil zip unzip curl >/dev/null
+fi
+
+JAVA_BIN="$(command -v java || echo "$PROJECT_ROOT/.local/jdk/bin/java")"
+SMALI_JAR="$PROJECT_ROOT/tools/smali.jar"
+BAKSMALI_JAR="$PROJECT_ROOT/tools/baksmali.jar"
 BASE_RVP_URL="https://github.com/inotia00/revanced-patches/releases/download/v5.14.1/patches-5.14.1.rvp"
 OUTPUT_RVP="$PROJECT_ROOT/FactQuizzer-Patches.rvp"
+
+mkdir -p "$PROJECT_ROOT/tools"
+[ -f "$SMALI_JAR" ] || curl -fsSL https://repo1.maven.org/maven2/org/smali/smali/2.5.2/smali-2.5.2.jar -o "$SMALI_JAR"
+[ -f "$BAKSMALI_JAR" ] || curl -fsSL https://repo1.maven.org/maven2/org/smali/baksmali/2.5.2/baksmali-2.5.2.jar -o "$BAKSMALI_JAR"
 
 echo "=== FactQuizzer ReVanced Patch Bundle Builder ==="
 

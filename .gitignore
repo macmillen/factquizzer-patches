@@ -11,3 +11,8 @@ tools/*.jar
 Thumbs.db
 *.log
 *.idsig
+
+# Project-local Android SDK & Emulator state
+.local/
+.android-data/
+

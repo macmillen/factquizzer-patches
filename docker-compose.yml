@@ -1,0 +1,26 @@
+services:
+  apk-builder:
+    image: eclipse-temurin:17-jdk-jammy
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    environment:
+      - IN_BUILDER_CONTAINER=1
+      - ANDROID_HOME=/workspace/.local/android-sdk
+
+  android-emulator:
+    image: budtmo/docker-android:emulator_13.0
+    container_name: youtube-quizzer-android
+    profiles: ["emulator"]
+    devices:
+      - /dev/kvm
+    environment:
+      - EMULATOR_DEVICE=Samsung Galaxy S10
+      - WEB_VNC=true
+      - EMULATOR_ARGS=-memory 6144 -cores 4 -gpu swiftshader_indirect -no-audio
+    ports:
+      - "127.0.0.1:5555:5555"
+      - "127.0.0.1:6080:6080"
+    volumes:
+      - ./.android-data:/home/androidusr
+    restart: unless-stopped

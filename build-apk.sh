@@ -1,12 +1,32 @@
 #!/usr/bin/env bash
 set -e
 
-PROJECT_DIR="/home/milan/Projects/youtube-quizzer"
-SDK_DIR="/home/milan/.local/share/android-sdk"
-JDK_DIR="/home/milan/.local/share/jdk"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-export JAVA_HOME="$JDK_DIR"
-export PATH="$JAVA_HOME/bin:$SDK_DIR/build-tools/34.0.0:$PATH"
+if [ "${IN_BUILDER_CONTAINER:-0}" != "1" ] && [ ! -d "$PROJECT_DIR/.local/jdk" ]; then
+  exec docker compose -f "$PROJECT_DIR/docker-compose.yml" run --rm apk-builder ./build-apk.sh "$@"
+fi
+
+SDK_DIR="$PROJECT_DIR/.local/android-sdk"
+if [ -d "$PROJECT_DIR/.local/jdk" ]; then
+  export JAVA_HOME="$PROJECT_DIR/.local/jdk"
+  export PATH="$JAVA_HOME/bin:$PATH"
+fi
+
+if ! command -v zip >/dev/null 2>&1 || ! command -v unzip >/dev/null 2>&1; then
+  apt-get update -qq && apt-get install -y -qq zip unzip curl >/dev/null
+fi
+
+if [ ! -f "$SDK_DIR/build-tools/34.0.0/aapt2" ] || [ ! -f "$SDK_DIR/platforms/android-34/android.jar" ]; then
+  echo "==> Bootstrapping project-local Android SDK into .local/android-sdk..."
+  mkdir -p "$SDK_DIR/cmdline-tools"
+  curl -fsSL https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o "$SDK_DIR/cmdline-tools.zip"
+  unzip -q "$SDK_DIR/cmdline-tools.zip" -d "$SDK_DIR/cmdline-tools"
+  rm -f "$SDK_DIR/cmdline-tools.zip"
+  yes | "$SDK_DIR/cmdline-tools/cmdline-tools/bin/sdkmanager" --sdk_root="$SDK_DIR" "build-tools;34.0.0" "platforms;android-34" >/dev/null
+fi
+
+export PATH="$SDK_DIR/build-tools/34.0.0:$PATH"
 
 AAPT2="$SDK_DIR/build-tools/34.0.0/aapt2"
 D8="$SDK_DIR/build-tools/34.0.0/d8"

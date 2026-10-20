@@ -2,7 +2,10 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-JAVA_BIN="${JAVA_HOME:-$HOME/.local/share/jdk}/bin/java"
+if [ "${IN_BUILDER_CONTAINER:-0}" != "1" ] && ! command -v java >/dev/null 2>&1 && [ ! -x "$SCRIPT_DIR/.local/jdk/bin/java" ]; then
+    exec docker compose -f "$SCRIPT_DIR/docker-compose.yml" run --rm apk-builder ./patch-youtube.sh "$@"
+fi
+JAVA_BIN="${JAVA_HOME:-$SCRIPT_DIR/.local/jdk}/bin/java"
 CLI_JAR="$SCRIPT_DIR/tools/revanced-cli.jar"
 PATCHES_RVP="$SCRIPT_DIR/FactQuizzer-Patches.rvp"
 OUTPUT_APK="$SCRIPT_DIR/YouTube-FactQuizzer.apk"
@@ -25,7 +28,6 @@ if [ ! -f "$JAVA_BIN" ]; then
         JAVA_BIN="$(command -v java)"
     else
         echo -e "${RED}[ERROR] Java 17 not found!${NC}"
-        echo "Please install Java 17 or set JAVA_HOME."
         exit 1
     fi
 fi
